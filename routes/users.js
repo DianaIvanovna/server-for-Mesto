@@ -19,8 +19,10 @@ fs.promises.readFile(pathFileUsers, { encoding: 'utf8' })
 const userSearch = (req, res) => {
   const value = users.findIndex((item) => item._id === req.params.id);
   if (value === -1) {
-    res.send('Пользователя не существует');
+    res.status(404);
+    res.send('Нет пользователя с таким id');
     return;
+
   }
   res.send(users[value]);
 };
@@ -28,7 +30,6 @@ const userSearch = (req, res) => {
 routerUsers.get('/', (req, res) => {
   res.send(users);
 });
-
 routerUsers.get('/:id', userSearch);
 
 module.exports = routerUsers;

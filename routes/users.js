@@ -25,11 +25,10 @@ const userSearch = (req, res) => {
   res.send(users[value]);
 };
 
-
-
 routerUsers.get('/', (req, res) => {
   res.send(users);
 });
+
 routerUsers.get('/:id', userSearch);
 
 module.exports = routerUsers;

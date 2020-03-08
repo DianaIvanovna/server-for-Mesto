@@ -15,5 +15,8 @@ const app = express();
 app.use('/users', routerUsers);
 app.use('/cards', routerCards);
 app.use(express.static(pathPublic));
-
+app.get('/:id', (req, res) => {
+  res.status(404);
+  res.send('Страница не найдена');
+});
 app.listen(PORT);

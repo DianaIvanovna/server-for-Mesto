@@ -20,4 +20,3 @@ routerCards.get('/', (req, res) => {
 });
 
 module.exports = routerCards;
-

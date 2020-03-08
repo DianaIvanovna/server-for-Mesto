@@ -2,17 +2,22 @@ const routerCards = require('express').Router();
 const path = require('path');
 const fs = require('fs');
 
+const pathFileCards = path.join(__dirname, '../data/cards.json');
 let cards;
-fs.promises.readFile(path.join(__dirname, '../data/cards.json'), { encoding: 'utf8' })
+
+// чтение данных из файла cards.json
+fs.promises.readFile(pathFileCards, { encoding: 'utf8' })
   .then((data) => {
-    cards = data.toString('utf8');
+    cards = JSON.parse(data);
   })
   .catch((err) => {
     console.log(err);
   });
+
 
 routerCards.get('/', (req, res) => {
   res.send(cards);
 });
 
 module.exports = routerCards;
+

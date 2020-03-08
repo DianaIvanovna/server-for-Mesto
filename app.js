@@ -1,14 +1,19 @@
 const express = require('express');
 const path = require('path');
 
-const routerUsers = require(path.join(__dirname, '/routes/users.js'));
-const routerCards = require(path.join(__dirname, '/routes/cards.js'));
+const { PORT = 3000 } = process.env;
+
+const pathUsers = path.join(__dirname, '/routes/users.js');
+const pathCards = path.join(__dirname, '/routes/cards.js');
+const pathPublic = path.join(__dirname, 'public');
+const routerUsers = require(pathUsers);
+const routerCards = require(pathCards);
 
 const app = express();
-const { PORT = 3000 } = process.env;
+
+
 app.use('/users', routerUsers);
 app.use('/cards', routerCards);
-
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(pathPublic));
 
 app.listen(PORT);

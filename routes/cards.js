@@ -16,7 +16,8 @@ fs.promises.readFile(pathFileCards, { encoding: 'utf8' })
 
 
 routerCards.get('/', (req, res) => {
-  res.send(cards);
+  // res.send(cards);
+  res.json(cards);
 });
 
 module.exports = routerCards;

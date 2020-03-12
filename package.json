@@ -6,8 +6,8 @@
   "scripts": {
     "start": "node app.js",
     "dev": "nodemon app.js",
-    "eslint":"eslint ./routes",
-    "eslintFix":"eslint ./routes --fix"
+    "eslint": "eslint ./routes",
+    "eslintFix": "eslint ./routes --fix"
   },
   "keywords": [],
   "author": "Diana Garbuz",

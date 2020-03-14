@@ -19,7 +19,7 @@ fs.promises.readFile(pathFileUsers, { encoding: 'utf8' })
 const userSearch = (req, res) => {
   const value = users.findIndex((item) => item._id === req.params.id);
   if (value === -1) {
-    // res.status(404);
+    res.status(404);
     // res.send('Нет пользователя с таким id');
     res.json({ message: 'Нет пользователя с таким id' });
     return;

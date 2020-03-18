@@ -1,13 +1,13 @@
 {
   "name": "Mesto",
   "version": "1.0.0",
-  "description": "",
+  "description": "Цель данного проекта - создание сервера с API и аутентификацией для проекта МЕСТО. Научиться работать с базами данных, разобраться в безопасности и тестировании, научиться разворачивать бекенд на удаленной машине.",
   "main": "index.js",
   "scripts": {
     "start": "node app.js",
     "dev": "nodemon app.js",
-    "eslint": "eslint ./routes",
-    "eslintFix": "eslint ./routes --fix"
+    "eslint": "eslint ./routes app.js",
+    "eslint:fix": "eslint ./routes app.js --fix"
   },
   "keywords": [],
   "author": "Diana Garbuz",

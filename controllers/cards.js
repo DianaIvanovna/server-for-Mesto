@@ -1,8 +1,9 @@
-const Card = require('../models/card.js');
+const Card = require('../models/card');
+
 
 module.exports.getCards = (req, res) => {
   Card.find({})
-    .then((data) => res.send(data))
+    .then((cards) => res.send(cards))
     .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
 };
 module.exports.createCard = (req, res) => {

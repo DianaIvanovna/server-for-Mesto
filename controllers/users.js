@@ -1,4 +1,4 @@
-const User = require('../models/user.js');
+const User = require('../models/user');
 
 module.exports.getUsers = (req, res) => {
   User.find({})
@@ -7,7 +7,7 @@ module.exports.getUsers = (req, res) => {
 };
 
 module.exports.userSearch = (req, res) => {
-  User.findOne({ _id: req.params.id })
+  User.findById(req.params.id)
     .then((user) => res.send({ data: user }))
     .catch(() => res.status(404).send({ message: 'Нет пользователя с таким id' }));
 };

@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node app.js",
+    "debugger": "node --inspect app.js",
     "dev": "nodemon app.js",
     "eslint": "eslint ./routes app.js",
     "eslint:fix": "eslint ./routes app.js --fix"

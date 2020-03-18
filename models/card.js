@@ -25,4 +25,4 @@ const cardSchema = new mongoose.Schema({
   },
 });
 // В этом задании самостоятельно разберитесь, как валидировать ссылки. Это описано в документации mongoose: https://mongoosejs.com/docs/validation.html
-module.export = mongoose.model('card', cardSchema);
+module.exports = mongoose.model('card', cardSchema);

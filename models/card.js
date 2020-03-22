@@ -17,11 +17,12 @@ const cardSchema = new mongoose.Schema({
     ref: 'user',
   },
   likes: [{
-    type: mongoose.Schema.Types.ObjectId, // как сделать значение по умолчанию, погугли
-
+    type: mongoose.Schema.Types.ObjectId,
+    default: [],
   }],
-  createAt: { // как сделать значение по умолчанию, погугли
+  createAt: {
     type: Date,
+    default: Date.now,
   },
 });
 // В этом задании самостоятельно разберитесь, как валидировать ссылки. Это описано в документации mongoose: https://mongoosejs.com/docs/validation.html

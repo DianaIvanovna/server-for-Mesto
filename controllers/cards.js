@@ -1,6 +1,5 @@
 const Card = require('../models/card');
 
-
 module.exports.getCards = (req, res) => {
   Card.find({})
     .then((cards) => res.send(cards))
@@ -8,12 +7,30 @@ module.exports.getCards = (req, res) => {
 };
 module.exports.createCard = (req, res) => {
   const { name, link } = req.body;
-  Card.create({ name, link })
+  Card.create({ name, link, owner: req.user._id })
     .then((card) => res.send({ data: card }))
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch(() => {
+      res.status(500).send({ message: 'Произошла ошибка' });
+    });
 };
 module.exports.deleteCard = (req, res) => {
   Card.findAndRemove(req.params.id)
     .then((card) => res.send({ data: card }))
     .catch(() => res.status(404).send({ message: 'Нет карточки с таким id' }));
+};
+module.exports.addLike = (req, res) => {
+  Card.findByIdAndUpdate(req.params.cardId,
+    { $addToSet: { likes: req.user._id } },
+    { new: true })
+    .then(() => { res.send('like'); })
+    .catch((err) => { console.log(err); });
+};
+module.exports.dislike = (req, res) => {
+  Card.findByIdAndUpdate(
+    req.params.cardId,
+    { $pull: { likes: req.user._id } },
+    { new: true },
+  )
+    .then(() => { res.send('dislike'); })
+    .catch((err) => { console.log(err); });
 };

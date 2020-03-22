@@ -7,7 +7,7 @@ module.exports.getUsers = (req, res) => {
 };
 
 module.exports.userSearch = (req, res) => {
-  User.findById(req.params.id)
+  User.findById(req.user._id)
     .then((user) => res.send({ data: user }))
     .catch(() => res.status(404).send({ message: 'Нет пользователя с таким id' }));
 };
@@ -17,4 +17,17 @@ module.exports.createUser = (req, res) => {
   User.create({ name, about, avatar })
     .then((user) => res.send({ data: user }))
     .catch(() => res.status(500).send({ message: 'Произошла ошибка при создании' }));
+};
+
+module.exports.updateProfile = (req, res) => {
+  const { name, about } = req.body;
+  User.findByIdAndUpdate(req.user._id, { name, about })
+    .then((user) => res.send({ data: user }))
+    .catch(() => res.status(500).send({ message: 'Произошла ошибка при обновление профиля' }));
+};
+module.exports.updateAvatar = (req, res) => {
+  const { avatar } = req.body;
+  User.findByIdAndUpdate(req.user._id, { avatar })
+    .then((user) => res.send({ data: user }))
+    .catch(() => res.status(500).send({ message: 'Произошла ошибка при обновление аватара' }));
 };

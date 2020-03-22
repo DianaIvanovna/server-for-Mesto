@@ -17,7 +17,16 @@ const app = express();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static('./public'));
+
+// временное решение
+app.use((req, res, next) => {
+  req.user = {
+    _id: '5e7769e146f9554e9029cfef',
+  };
+
+  next();
+});
+
 app.use('/users', routerUsers);
 app.use('/cards', routerCards);
 app.use((req, res) => res.status(404).send({ message: 'Запрашиваемый ресурс не найден' }));

@@ -14,7 +14,7 @@ module.exports.createCard = (req, res) => {
     });
 };
 module.exports.deleteCard = (req, res) => {
-  Card.findAndRemove(req.params.id)
+  Card.findByIdAndRemove(req.params.cardId)
     .then((card) => res.send({ data: card }))
     .catch(() => res.status(404).send({ message: 'Нет карточки с таким id' }));
 };
@@ -22,8 +22,8 @@ module.exports.addLike = (req, res) => {
   Card.findByIdAndUpdate(req.params.cardId,
     { $addToSet: { likes: req.user._id } },
     { new: true })
-    .then(() => { res.send('like'); })
-    .catch((err) => { console.log(err); });
+    .then(() => { res.send({ message: 'add like' }); })
+    .catch((err) => { res.send(err.message); });
 };
 module.exports.dislike = (req, res) => {
   Card.findByIdAndUpdate(
@@ -31,6 +31,6 @@ module.exports.dislike = (req, res) => {
     { $pull: { likes: req.user._id } },
     { new: true },
   )
-    .then(() => { res.send('dislike'); })
-    .catch((err) => { console.log(err); });
+    .then(() => { res.send({ message: 'delete like' }); })
+    .catch((err) => { res.send(err.message); });
 };

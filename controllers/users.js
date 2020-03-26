@@ -11,6 +11,7 @@ module.exports.userSearch = (req, res) => {
     .then((user) => {
       if (res == null) {
         console.log(res);
+
         res.status(404).send({ message: 'Нет пользователя с таким id' });
       }
       res.send({ data: user });
@@ -33,7 +34,7 @@ module.exports.updateProfile = (req, res) => {
     upsert: true, // если пользователь не найден, он будет создан
   })
     .then((user) => res.send({ data: user }))
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка при обновление профиля' }));
+    .catch((err) => res.status(500).send({ message: err.message }));
 };
 module.exports.updateAvatar = (req, res) => {
   const { avatar } = req.body;
@@ -43,5 +44,5 @@ module.exports.updateAvatar = (req, res) => {
     upsert: true, // если пользователь не найден, он будет создан
   })
     .then((user) => res.send({ data: user }))
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка при обновление аватара' }));
+    .catch((err) => res.status(500).send({ message: err.message }));
 };

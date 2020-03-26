@@ -7,10 +7,11 @@ module.exports.getCards = (req, res) => {
 };
 module.exports.createCard = (req, res) => {
   const { name, link } = req.body;
+  console.log(req.body);
   Card.create({ name, link, owner: req.user._id })
     .then((card) => res.send({ data: card }))
-    .catch(() => {
-      res.status(500).send({ message: 'Произошла ошибка' });
+    .catch((err) => {
+      res.status(500).send({ message: err.message });
     });
 };
 module.exports.deleteCard = (req, res) => {
@@ -23,7 +24,7 @@ module.exports.addLike = (req, res) => {
     { $addToSet: { likes: req.user._id } },
     { new: true })
     .then(() => { res.send({ message: 'add like' }); })
-    .catch((err) => { res.send(err.message); });
+    .catch(() => { res.status(404).send({ message: 'Запрашиваемый ресурс не найден' }); });
 };
 module.exports.dislike = (req, res) => {
   Card.findByIdAndUpdate(
@@ -32,5 +33,5 @@ module.exports.dislike = (req, res) => {
     { new: true },
   )
     .then(() => { res.send({ message: 'delete like' }); })
-    .catch((err) => { res.send(err.message); });
+    .catch(() => { res.status(404).send({ message: 'Запрашиваемый ресурс не найден' }); });
 };

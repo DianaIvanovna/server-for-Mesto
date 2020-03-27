@@ -9,12 +9,12 @@ module.exports.getUsers = (req, res) => {
 module.exports.userSearch = (req, res) => {
   User.findById(req.params.userId)
     .then((user) => {
-      if (res == null) {
-        console.log(res);
-
+      if (user == null) {
+        res.send(res);
         res.status(404).send({ message: 'Нет пользователя с таким id' });
+      } else {
+        res.send({ data: user });
       }
-      res.send({ data: user });
     })
     .catch(() => res.status(404).send({ message: 'Нет пользователя с таким id' }));
 };

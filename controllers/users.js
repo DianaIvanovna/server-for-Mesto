@@ -10,7 +10,6 @@ module.exports.userSearch = (req, res) => {
   User.findById(req.params.userId)
     .then((user) => {
       if (user == null) {
-        res.send(res);
         res.status(404).send({ message: 'Нет пользователя с таким id' });
       } else {
         res.send({ data: user });

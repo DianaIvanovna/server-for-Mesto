@@ -1,4 +1,5 @@
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 
 module.exports.getUsers = (req, res) => {
@@ -19,12 +20,30 @@ module.exports.userSearch = (req, res) => {
     .catch(() => res.status(404).send({ message: 'Нет пользователя с таким id' }));
 };
 
-module.exports.createUser = (req, res) => {
-  const { name, about, avatar, email, password } = req.body;
-  bcrypt.hash(password, 10)
-    .then((hash => User.create({
-      name, about, avatar, email, password: hash,
+module.exports.login = (req, res) => {
+  const { email, password } = req.body;
+
+  return User.findUserByCredentials(email, password)
+    .then((user) => {
+      // создадим токен
+      const token = jwt.sign({ _id: user._id }, 'some-secret-key', { expiresIn: '7d' });
+      // вернём токен
+      res.send({ token });
     })
+    .catch((err) => {
+      res.status(401).send({ message: err.message });
+    });
+};
+
+module.exports.createUser = (req, res) => {
+  const {
+    name, about, avatar, email, password,
+  } = req.body;
+
+  bcrypt.hash(password, 10)
+    .then((hash) => User.create({
+      name, about, avatar, email, password: hash,
+    }))
     .then((user) => res.send({ data: user }))
     .catch((err) => res.status(500).send(err.message));
 };

@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
+const validator = require('validator');
+
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -18,14 +20,20 @@ const userSchema = new mongoose.Schema({
   },
   avatar: {
     type: String,
-    // eslint-disable-next-line
-    match: /((http:\/\/)|(https:\/\/))((([\da-z\.-]+)\.([a-z\.]{2,6})([=&?\/\w\.-]*)*\/?(:(6553[0-5]|655[0-2][0-9]|65[0-4][0-9]{2}|6[0-4][0-9]{3}|[1-5][0-9]{4}|\d{2,4})$)?$)|((\d{1,3}\.){3}\d{1,3}))(:(6553[0-5]|655[0-2][0-9]|65[0-4][0-9]{2}|6[0-4][0-9]{3}|[1-5][0-9]{4}|\d{2,4})$)?$/,
     required: true,
+    validate: {
+      validator: validator.isURL,
+      message: 'is not a valid Url',
+    },
   },
   email: {
     type: String,
     required: true,
     unique: true,
+    validate: {
+      validator: validator.isEmail,
+      message: 'is not a valid email',
+    },
   },
   password: {
     type: String,
@@ -33,7 +41,6 @@ const userSchema = new mongoose.Schema({
     minlength: 8,
     select: false,
   },
-  // разберись с валидацией
 });
 
 /* eslint func-names: off */

@@ -1,27 +1,14 @@
 const jwt = require('jsonwebtoken');
 
+const { SECRET } = process.env;
+
 module.exports = (req, res, next) => {
-  // // достаём авторизационный заголовок
-  // const { authorization } = req.headers;
-  // console.log(req.cookies.jwt);
-
-  // // убеждаемся, что он есть и начинается с Bearer
-  // if (!authorization || !authorization.startsWith('Bearer ')) {
-  //   return res
-  //     .status(401)
-  //     .send({ message: 'Необходима авторизация' });
-  // }
-
-  // let payload;
-  // // извлечём токен
-  // const token = authorization.replace('Bearer ', '');
-
   let payload;
   const token = req.cookies.jwt;
   // верифицируем токен
   try {
     // попытаемся верифицировать токен
-    payload = jwt.verify(token, 'some-secret-key');
+    payload = jwt.verify(token, SECRET);
   } catch (err) {
     // отправим ошибку, если не получилось
     return res

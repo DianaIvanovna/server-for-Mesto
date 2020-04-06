@@ -1,15 +1,23 @@
-module.exports = (req, res, next) => {
-  // достаём авторизационный заголовок
-  const { authorization } = req.headers;
+const jwt = require('jsonwebtoken');
 
-  // убеждаемся, что он есть и начинается с Bearer
-  if (!authorization || !authorization.startsWith('Bearer ')) {
-    return res
-      .status(401)
-      .send({ message: 'Необходима авторизация' });
-  }
-  // извлечём токен
-  const token = authorization.replace('Bearer ', '');
+module.exports = (req, res, next) => {
+  // // достаём авторизационный заголовок
+  // const { authorization } = req.headers;
+  // console.log(req.cookies.jwt);
+
+  // // убеждаемся, что он есть и начинается с Bearer
+  // if (!authorization || !authorization.startsWith('Bearer ')) {
+  //   return res
+  //     .status(401)
+  //     .send({ message: 'Необходима авторизация' });
+  // }
+
+  // let payload;
+  // // извлечём токен
+  // const token = authorization.replace('Bearer ', '');
+
+  let payload;
+  const token = req.cookies.jwt;
   // верифицируем токен
   try {
     // попытаемся верифицировать токен
@@ -21,6 +29,6 @@ module.exports = (req, res, next) => {
       .send({ message: 'Необходима авторизация' });
   }
   req.user = payload; // записываем пейлоуд в объект запроса
-
   next(); // пропускаем запрос дальше
+  return null;
 };

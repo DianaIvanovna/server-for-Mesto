@@ -17,14 +17,19 @@ module.exports.createCard = (req, res) => {
 module.exports.deleteCard = (req, res) => {
   Card.findByIdAndRemove(req.params.cardId)
     .then((card) => {
+      if (!card.owner === req.user._id) {
+        return Promise.reject(new Error('Вы не можете удалять чужие карточки'));
+      }
       if (card == null) {
         res.send({ message: 'Нет карточки с таким id' });
       } else {
         res.send({ data: card });
       }
+      return null;
     })
     .catch(() => res.status(404).send({ message: 'Нет карточки с таким id' }));
 };
+
 module.exports.addLike = (req, res) => {
   Card.findByIdAndUpdate(req.params.cardId,
     { $addToSet: { likes: req.user._id } },

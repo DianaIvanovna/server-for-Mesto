@@ -6,6 +6,7 @@ const cardSchema = new mongoose.Schema({
     minlength: 2,
     maxlength: 30,
     required: true,
+    match: /[a-zA-z0-9а-яёА-Яё\-_., ]+/,
   },
   link: {
     type: String,

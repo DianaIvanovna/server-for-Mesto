@@ -1,8 +1,7 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
-
-const { SECRET } = process.env;
+const { SECRET } = require('../config.js');
 
 module.exports.getUsers = (req, res) => {
   User.find({})
@@ -33,7 +32,8 @@ module.exports.login = (req, res) => {
           maxAge: 604800,
           httpOnly: true,
           sameSite: true,
-        });
+        })
+        .end();
     })
     .catch((err) => {
       res.status(401).send({ message: err.message });
@@ -44,19 +44,18 @@ module.exports.createUser = (req, res) => {
   const {
     name, about, avatar, email, password,
   } = req.body;
-
   bcrypt.hash(password, 10)
-    .then((hash) => {
-      User.create({
-        name, about, avatar, email, password: hash,
-      });
-    })
-    .then((user) => {
-      res.send({ data: user });
-    })
-    .catch((err) => {
-      res.status(500).send(err.message);
-    });
+    .then((hash) => User.create({
+      name, about, avatar, email, password: hash,
+    }))
+    .then((user) => res.send({
+      _id: user._id,
+      name: user.name,
+      about: user.about,
+      avatar: user.avatar,
+      email: user.email,
+    }))
+    .catch((err) => res.status(500).send({ message: err.message }));
 };
 
 module.exports.updateProfile = (req, res) => {

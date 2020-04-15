@@ -1,4 +1,7 @@
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const User = require('../models/user');
+const { SECRET } = require('../config.js');
 
 module.exports.getUsers = (req, res) => {
   User.find({})
@@ -18,11 +21,41 @@ module.exports.userSearch = (req, res) => {
     .catch(() => res.status(404).send({ message: 'Нет пользователя с таким id' }));
 };
 
+module.exports.login = (req, res) => {
+  const { email, password } = req.body;
+  return User.findUserByCredentials(email, password)
+    .then((user) => {
+      // создадим токен
+      const token = jwt.sign({ _id: user._id }, SECRET);
+      res
+        .cookie('jwt', token, {
+          maxAge: 604800,
+          httpOnly: true,
+          sameSite: true,
+        })
+        .end();
+    })
+    .catch((err) => {
+      res.status(401).send({ message: err.message });
+    });
+};
+
 module.exports.createUser = (req, res) => {
-  const { name, about, avatar } = req.body;
-  User.create({ name, about, avatar })
-    .then((user) => res.send({ data: user }))
-    .catch((err) => res.status(500).send(err.message));
+  const {
+    name, about, avatar, email, password,
+  } = req.body;
+  bcrypt.hash(password, 10)
+    .then((hash) => User.create({
+      name, about, avatar, email, password: hash,
+    }))
+    .then((user) => res.send({
+      _id: user._id,
+      name: user.name,
+      about: user.about,
+      avatar: user.avatar,
+      email: user.email,
+    }))
+    .catch((err) => res.status(500).send({ message: err.message }));
 };
 
 module.exports.updateProfile = (req, res) => {

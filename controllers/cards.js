@@ -1,49 +1,56 @@
+// controllers/cards.js
 const Card = require('../models/card');
+const NotFoundError = require('../errors/notFoundError');
 
-module.exports.getCards = (req, res) => {
+module.exports.getCards = (req, res, next) => { // +
   Card.find({})
     .then((cards) => res.send(cards))
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch((err) => next(err));
+  // .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
 };
-module.exports.createCard = (req, res) => {
+module.exports.createCard = (req, res, next) => { // +
   const { name, link } = req.body;
-  console.log(req.body);
   Card.create({ name, link, owner: req.user._id })
     .then((card) => res.send({ data: card }))
-    .catch((err) => {
+    .catch((err) => next(err));
+  /* .catch((err) => {
       res.status(500).send({ message: err.message });
-    });
+    }); */
 };
-module.exports.deleteCard = (req, res) => {
+module.exports.deleteCard = (req, res, next) => {
   Card.findByIdAndRemove(req.params.cardId)
     .then((card) => {
       if (card == null) {
-        return res.send({ message: 'Нет карточки с таким id' });
+        console.log(card);
+        throw new NotFoundError('Нет карточки с таким id');
+        // return res.send({ message: 'Нет карточки с таким id' });
       }
-
       if (card.owner === req.user._id) {
-        return Promise.reject(new Error('Вы не можете удалять чужие карточки'));
+        throw new NotFoundError('Вы не можете удалять чужие карточки');
+        // return Promise.reject(new Error('Вы не можете удалять чужие карточки'));
       }
-
       return res.send({ data: card });
     })
-    .catch(() => res.status(404).send({ message: 'Нет карточки с таким id' }));
+    .catch((err) => next(err));
+  // .catch(() => res.status(404).send({ message: 'Нет карточки с таким id' }));
 };
 
-module.exports.addLike = (req, res) => {
+module.exports.addLike = (req, res, next) => {
   Card.findByIdAndUpdate(req.params.cardId,
     { $addToSet: { likes: req.user._id } },
     { new: true })
     .then((card) => {
       if (card == null) {
-        res.send({ message: 'Нет карточки с таким id' });
+        throw new NotFoundError('Нет карточки с таким id');
+        // res.send({ message: 'Нет карточки с таким id' });
       } else {
         res.send({ message: 'add like' });
       }
     })
-    .catch(() => { res.status(404).send({ message: 'Запрашиваемый ресурс не найден' }); });
+    .catch((err) => next(err));
+  // .catch(() => { res.status(404).send({ message: 'Запрашиваемый ресурс не найден' }); });
 };
-module.exports.dislike = (req, res) => {
+module.exports.dislike = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $pull: { likes: req.user._id } },
@@ -51,10 +58,12 @@ module.exports.dislike = (req, res) => {
   )
     .then((card) => {
       if (card == null) {
-        res.send({ message: 'Нет карточки с таким id' });
+        throw new NotFoundError('Нет карточки с таким id');
+        // res.send({ message: 'Нет карточки с таким id' });
       } else {
         res.send({ message: 'delete like' });
       }
     })
-    .catch(() => { res.status(404).send({ message: 'Запрашиваемый ресурс не найден' }); });
+    .catch((err) => next(err));
+  // .catch(() => { res.status(404).send({ message: 'Запрашиваемый ресурс не найден' }); });
 };

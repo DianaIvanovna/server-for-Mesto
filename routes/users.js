@@ -1,3 +1,4 @@
+// routes/users.js
 const routerUsers = require('express').Router();
 const {
   getUsers, userSearch, updateProfile, updateAvatar,

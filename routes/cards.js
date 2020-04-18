@@ -1,3 +1,4 @@
+// routes/cards.js
 const routerCards = require('express').Router();
 
 const {

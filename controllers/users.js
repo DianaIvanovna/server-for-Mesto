@@ -1,27 +1,31 @@
+// controllers/users.js
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const { SECRET } = require('../config.js');
+const NotFoundError = require('../errors/notFoundError');
+const UnauthorizedError = require('../errors/unauthorizedError');
 
-module.exports.getUsers = (req, res) => {
+module.exports.getUsers = (req, res, next) => { // +
   User.find({})
     .then((users) => res.send({ data: users }))
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    // .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch((err) => next(err));
 };
 
-module.exports.userSearch = (req, res) => {
+module.exports.userSearch = (req, res, next) => { // +
   User.findById(req.params.userId)
     .then((user) => {
       if (user == null) {
-        res.status(404).send({ message: 'Нет пользователя с таким id' });
+        throw new NotFoundError('Нет пользователя с таким id');
       } else {
         res.send({ data: user });
       }
     })
-    .catch(() => res.status(404).send({ message: 'Нет пользователя с таким id' }));
+    .catch((err) => next(err));
 };
 
-module.exports.login = (req, res) => {
+module.exports.login = (req, res, next) => { // +
   const { email, password } = req.body;
   return User.findUserByCredentials(email, password)
     .then((user) => {
@@ -36,11 +40,13 @@ module.exports.login = (req, res) => {
         .end();
     })
     .catch((err) => {
-      res.status(401).send({ message: err.message });
+      const error = new UnauthorizedError(err.message);
+      next(error);
+      // res.status(401).send({ message: err.message });
     });
 };
 
-module.exports.createUser = (req, res) => {
+module.exports.createUser = (req, res, next) => { // +- как быть с валидацией
   const {
     name, about, avatar, email, password,
   } = req.body;
@@ -55,10 +61,11 @@ module.exports.createUser = (req, res) => {
       avatar: user.avatar,
       email: user.email,
     }))
-    .catch((err) => res.status(500).send({ message: err.message }));
+    .catch((err) => next(err));
+  // .catch((err) => res.status(500).send({ message: err.message }));
 };
 
-module.exports.updateProfile = (req, res) => {
+module.exports.updateProfile = (req, res, next) => {
   const { name, about } = req.body;
   User.findByIdAndUpdate(req.user._id, { name, about }, {
     new: true, // обработчик then получит на вход обновлённую запись
@@ -66,9 +73,10 @@ module.exports.updateProfile = (req, res) => {
     upsert: true, // если пользователь не найден, он будет создан
   })
     .then((user) => res.send({ data: user }))
-    .catch((err) => res.status(500).send({ message: err.message }));
+    .catch((err) => next(err));
+  // .catch((err) => res.status(500).send({ message: err.message }));
 };
-module.exports.updateAvatar = (req, res) => {
+module.exports.updateAvatar = (req, res, next) => {
   const { avatar } = req.body;
   User.findByIdAndUpdate(req.user._id, { avatar }, {
     new: true, // обработчик then получит на вход обновлённую запись
@@ -76,5 +84,6 @@ module.exports.updateAvatar = (req, res) => {
     upsert: true, // если пользователь не найден, он будет создан
   })
     .then((user) => res.send({ data: user }))
-    .catch((err) => res.status(500).send({ message: err.message }));
+    .catch((err) => next(err));
+  // .catch((err) => res.status(500).send({ message: err.message }));
 };

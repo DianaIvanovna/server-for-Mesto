@@ -1,3 +1,4 @@
+// app.js
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
@@ -35,5 +36,17 @@ app.use(auth);
 app.use('/users', routerUsers);
 app.use('/cards', routerCards);
 app.use((req, res) => res.status(404).send({ message: 'Запрашиваемый ресурс не найден' }));
+
+// обработчик ошибок
+app.use((err, req, res, next) => {
+  const { statusCode = 500, message } = err;
+  res
+    .status(statusCode)
+    .send({ // проверяем статус и выставляем сообщение в зависимости от него
+      message: statusCode === 500
+        ? 'На сервере произошла ошибка'
+        : message,
+    });
+});
 
 app.listen(PORT);

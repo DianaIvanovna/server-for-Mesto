@@ -15,6 +15,7 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
 
 const { PORT = 3000 } = process.env;
 const { errors } = require('celebrate');
+const { requestLogger, errorLogger } = require('./middlewares/logger');
 const routerUsers = require('./routes/users.js');
 const routerCards = require('./routes/cards.js');
 
@@ -28,6 +29,7 @@ app.use(cookieParser());
 app.use(helmet());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(requestLogger); // подключаем логгер запросов
 
 app.post('/signup', createUser);
 app.post('/signin', login);
@@ -38,6 +40,7 @@ app.use('/users', routerUsers);
 app.use('/cards', routerCards);
 app.use((req, res) => res.status(404).send({ message: 'Запрашиваемый ресурс не найден' }));
 
+app.use(errorLogger); // подключаем логгер ошибок
 app.use(errors()); // обработчик ошибок celebrate
 
 /* eslint-disable no-unused-vars */

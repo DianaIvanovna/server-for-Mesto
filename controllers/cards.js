@@ -2,20 +2,16 @@
 const Card = require('../models/card');
 const NotFoundError = require('../errors/notFoundError');
 
-module.exports.getCards = (req, res, next) => { // +
+module.exports.getCards = (req, res, next) => {
   Card.find({})
     .then((cards) => res.send(cards))
     .catch((err) => next(err));
-  // .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
 };
-module.exports.createCard = (req, res, next) => { // +
+module.exports.createCard = (req, res, next) => {
   const { name, link } = req.body;
   Card.create({ name, link, owner: req.user._id })
     .then((card) => res.send({ data: card }))
     .catch((err) => next(err));
-  /* .catch((err) => {
-      res.status(500).send({ message: err.message });
-    }); */
 };
 module.exports.deleteCard = (req, res, next) => {
   Card.findByIdAndRemove(req.params.cardId)
@@ -23,16 +19,13 @@ module.exports.deleteCard = (req, res, next) => {
       if (card == null) {
         console.log(card);
         throw new NotFoundError('Нет карточки с таким id');
-        // return res.send({ message: 'Нет карточки с таким id' });
       }
       if (card.owner === req.user._id) {
         throw new NotFoundError('Вы не можете удалять чужие карточки');
-        // return Promise.reject(new Error('Вы не можете удалять чужие карточки'));
       }
       return res.send({ data: card });
     })
     .catch((err) => next(err));
-  // .catch(() => res.status(404).send({ message: 'Нет карточки с таким id' }));
 };
 
 module.exports.addLike = (req, res, next) => {
@@ -42,13 +35,11 @@ module.exports.addLike = (req, res, next) => {
     .then((card) => {
       if (card == null) {
         throw new NotFoundError('Нет карточки с таким id');
-        // res.send({ message: 'Нет карточки с таким id' });
       } else {
         res.send({ message: 'add like' });
       }
     })
     .catch((err) => next(err));
-  // .catch(() => { res.status(404).send({ message: 'Запрашиваемый ресурс не найден' }); });
 };
 module.exports.dislike = (req, res, next) => {
   Card.findByIdAndUpdate(
@@ -59,11 +50,9 @@ module.exports.dislike = (req, res, next) => {
     .then((card) => {
       if (card == null) {
         throw new NotFoundError('Нет карточки с таким id');
-        // res.send({ message: 'Нет карточки с таким id' });
       } else {
         res.send({ message: 'delete like' });
       }
     })
     .catch((err) => next(err));
-  // .catch(() => { res.status(404).send({ message: 'Запрашиваемый ресурс не найден' }); });
 };

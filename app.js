@@ -14,6 +14,7 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
 });
 
 const { PORT = 3000 } = process.env;
+const { errors } = require('celebrate');
 const routerUsers = require('./routes/users.js');
 const routerCards = require('./routes/cards.js');
 
@@ -37,7 +38,9 @@ app.use('/users', routerUsers);
 app.use('/cards', routerCards);
 app.use((req, res) => res.status(404).send({ message: 'Запрашиваемый ресурс не найден' }));
 
-// обработчик ошибок
+app.use(errors()); // обработчик ошибок celebrate
+
+/* eslint-disable no-unused-vars */
 app.use((err, req, res, next) => {
   const { statusCode = 500, message } = err;
   res

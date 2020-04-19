@@ -6,14 +6,13 @@ const { SECRET } = require('../config.js');
 const NotFoundError = require('../errors/notFoundError');
 const UnauthorizedError = require('../errors/unauthorizedError');
 
-module.exports.getUsers = (req, res, next) => { // +
+module.exports.getUsers = (req, res, next) => {
   User.find({})
     .then((users) => res.send({ data: users }))
-    // .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
-    .catch((err) => next(err));
+    .catch((err) => next({ message: err.message }));
 };
 
-module.exports.userSearch = (req, res, next) => { // +
+module.exports.userSearch = (req, res, next) => {
   User.findById(req.params.userId)
     .then((user) => {
       if (user == null) {
@@ -22,10 +21,10 @@ module.exports.userSearch = (req, res, next) => { // +
         res.send({ data: user });
       }
     })
-    .catch((err) => next(err));
+    .catch((err) => next({ message: err.message }));
 };
 
-module.exports.login = (req, res, next) => { // +
+module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
   return User.findUserByCredentials(email, password)
     .then((user) => {
@@ -42,11 +41,10 @@ module.exports.login = (req, res, next) => { // +
     .catch((err) => {
       const error = new UnauthorizedError(err.message);
       next(error);
-      // res.status(401).send({ message: err.message });
     });
 };
 
-module.exports.createUser = (req, res, next) => { // +- как быть с валидацией
+module.exports.createUser = (req, res, next) => {
   const {
     name, about, avatar, email, password,
   } = req.body;
@@ -61,8 +59,7 @@ module.exports.createUser = (req, res, next) => { // +- как быть с ва�
       avatar: user.avatar,
       email: user.email,
     }))
-    .catch((err) => next(err));
-  // .catch((err) => res.status(500).send({ message: err.message }));
+    .catch((err) => next({ message: err.message }));
 };
 
 module.exports.updateProfile = (req, res, next) => {
@@ -73,8 +70,7 @@ module.exports.updateProfile = (req, res, next) => {
     upsert: true, // если пользователь не найден, он будет создан
   })
     .then((user) => res.send({ data: user }))
-    .catch((err) => next(err));
-  // .catch((err) => res.status(500).send({ message: err.message }));
+    .catch((err) => next({ message: err.message }));
 };
 module.exports.updateAvatar = (req, res, next) => {
   const { avatar } = req.body;
@@ -84,6 +80,5 @@ module.exports.updateAvatar = (req, res, next) => {
     upsert: true, // если пользователь не найден, он будет создан
   })
     .then((user) => res.send({ data: user }))
-    .catch((err) => next(err));
-  // .catch((err) => res.status(500).send({ message: err.message }));
+    .catch((err) => next({ message: err.message }));
 };

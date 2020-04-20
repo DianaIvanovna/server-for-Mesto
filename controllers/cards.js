@@ -5,13 +5,13 @@ const NotFoundError = require('../errors/notFoundError');
 module.exports.getCards = (req, res, next) => {
   Card.find({})
     .then((cards) => res.send(cards))
-    .catch((err) => next(err));
+    .catch((err) => next({ message: err.message }));
 };
 module.exports.createCard = (req, res, next) => {
   const { name, link } = req.body;
   Card.create({ name, link, owner: req.user._id })
     .then((card) => res.send({ data: card }))
-    .catch((err) => next(err));
+    .catch((err) => next({ message: err.message }));
 };
 module.exports.deleteCard = (req, res, next) => {
   Card.findByIdAndRemove(req.params.cardId)
@@ -25,7 +25,7 @@ module.exports.deleteCard = (req, res, next) => {
       }
       return res.send({ data: card });
     })
-    .catch((err) => next(err));
+    .catch((err) => next({ message: err.message }));
 };
 
 module.exports.addLike = (req, res, next) => {
@@ -39,7 +39,7 @@ module.exports.addLike = (req, res, next) => {
         res.send({ message: 'add like' });
       }
     })
-    .catch((err) => next(err));
+    .catch((err) => next({ message: err.message }));
 };
 module.exports.dislike = (req, res, next) => {
   Card.findByIdAndUpdate(
@@ -54,5 +54,5 @@ module.exports.dislike = (req, res, next) => {
         res.send({ message: 'delete like' });
       }
     })
-    .catch((err) => next(err));
+    .catch((err) => next({ message: err.message }));
 };

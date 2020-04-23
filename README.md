@@ -32,7 +32,7 @@
 
 ### Сервер располагается по адресу
 - https://api.mestodiana.gq/
-- http://api.mestodiana.ga/
+- http://api.mestodiana.gq/
 - 84.201.130.178
 
 

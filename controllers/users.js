@@ -24,6 +24,7 @@ module.exports.userSearch = (req, res, next) => {
     .catch((err) => next({ message: err.message }));
 };
 
+
 module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
   return User.findUserByCredentials(email, password)

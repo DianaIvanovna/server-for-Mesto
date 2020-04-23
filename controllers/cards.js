@@ -20,7 +20,7 @@ module.exports.deleteCard = (req, res, next) => {
         console.log(card);
         throw new NotFoundError('Нет карточки с таким id');
       }
-      if (card.owner === req.user._id) {
+      if (String(card.owner) !== req.user._id) {
         throw new NotFoundError('Вы не можете удалять чужие карточки');
       }
       return res.send({ data: card });
@@ -35,9 +35,8 @@ module.exports.addLike = (req, res, next) => {
     .then((card) => {
       if (card == null) {
         throw new NotFoundError('Нет карточки с таким id');
-      } else {
-        res.send({ message: 'add like' });
       }
+      res.send({ data: card });
     })
     .catch((err) => next({ message: err.message }));
 };
@@ -50,9 +49,8 @@ module.exports.dislike = (req, res, next) => {
     .then((card) => {
       if (card == null) {
         throw new NotFoundError('Нет карточки с таким id');
-      } else {
-        res.send({ message: 'delete like' });
       }
+      res.send({ data: card });
     })
     .catch((err) => next({ message: err.message }));
 };

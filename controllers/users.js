@@ -9,7 +9,7 @@ const UnauthorizedError = require('../errors/unauthorizedError');
 module.exports.getUsers = (req, res, next) => {
   User.find({})
     .then((users) => res.send({ data: users }))
-    .catch((err) => next({ message: err.message }));
+    .catch(next);
 };
 
 module.exports.userSearch = (req, res, next) => {
@@ -21,7 +21,7 @@ module.exports.userSearch = (req, res, next) => {
         res.send({ data: user });
       }
     })
-    .catch((err) => next({ message: err.message }));
+    .catch(next);
 };
 
 
@@ -60,7 +60,7 @@ module.exports.createUser = (req, res, next) => {
       avatar: user.avatar,
       email: user.email,
     }))
-    .catch((err) => next({ message: err.message }));
+    .catch(next);
 };
 
 module.exports.updateProfile = (req, res, next) => {
@@ -81,5 +81,5 @@ module.exports.updateAvatar = (req, res, next) => {
     upsert: true, // если пользователь не найден, он будет создан
   })
     .then((user) => res.send({ data: user }))
-    .catch((err) => next({ message: err.message }));
+    .catch(next);
 };

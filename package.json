@@ -7,8 +7,8 @@
     "start": "node app.js",
     "debugger": "node --inspect app.js",
     "dev": "nodemon app.js",
-    "eslint": "eslint ./routes app.js ./controllers ./errors ./middlewares ./models",
-    "eslint:fix": "eslint ./routes app.js ./controllers ./errors ./middlewares ./models --fix"
+    "eslint": "eslint -c ./.eslintrc --ext .js ./ --ignore-path .gitignore",
+    "eslint:fix": "eslint -c ./.eslintrc --ext .js ./ --ignore-path .gitignore --fix"
   },
   "keywords": [],
   "author": "Diana Garbuz",

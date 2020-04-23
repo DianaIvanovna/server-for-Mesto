@@ -5,7 +5,7 @@ const {
   getCards, createCard, deleteCard, addLike, dislike,
 } = require('../controllers/cards');
 
-const { RegURL } = require('../validate/RegURL');
+const RegURL = require('../validate/RegURL');
 
 routerCards.get('/', getCards);
 routerCards.post('/', celebrate({

@@ -14,10 +14,9 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
 });
 
 const { PORT = 3000 } = process.env;
-const { errors } = require('celebrate');
-const { celebrate, Joi } = require('celebrate');
+const { celebrate, Joi, errors } = require('celebrate');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
-const { RegURL } = require('./validate/RegURL');
+const RegURL = require('./validate/RegURL');
 const routerUsers = require('./routes/users.js');
 const routerCards = require('./routes/cards.js');
 
@@ -65,14 +64,14 @@ app.use(errorLogger); // подключаем логгер ошибок
 app.use(errors()); // обработчик ошибок celebrate
 
 /* eslint-disable no-unused-vars */
-app.use((err, message, req, res, next) => {
+app.use((err, req, res, next) => {
   const { statusCode = 500 } = err;
   res
     .status(statusCode)
     .send({ // проверяем статус и выставляем сообщение в зависимости от него
       message: statusCode === 500
         ? 'На сервере произошла ошибка'
-        : message,
+        : err.message,
     });
 });
 

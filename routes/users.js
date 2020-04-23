@@ -4,7 +4,7 @@ const { celebrate, Joi } = require('celebrate');
 const {
   getUsers, userSearch, updateProfile, updateAvatar,
 } = require('../controllers/users');
-const { RegURL } = require('../validate/RegURL');
+const RegURL = require('../validate/RegURL');
 
 
 routerUsers.get('/', getUsers);

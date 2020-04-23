@@ -5,6 +5,7 @@ const User = require('../models/user');
 const { SECRET } = require('../config.js');
 const NotFoundError = require('../errors/notFoundError');
 const UnauthorizedError = require('../errors/unauthorizedError');
+const BadRequestError = require('../errors/badRequestError');
 
 module.exports.getUsers = (req, res, next) => {
   User.find({})
@@ -60,7 +61,10 @@ module.exports.createUser = (req, res, next) => {
       avatar: user.avatar,
       email: user.email,
     }))
-    .catch(next);
+    .catch((err) => {
+      const error = new BadRequestError(err.message);
+      next(error);
+    });
 };
 
 module.exports.updateProfile = (req, res, next) => {
